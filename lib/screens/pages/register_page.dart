@@ -1,34 +1,47 @@
 import 'package:auth_supabase/screens/auth/auth_service.dart';
-import 'package:auth_supabase/screens/pages/register_page.dart';
+import 'package:auth_supabase/screens/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   // get  auth state
   final authService = AuthService();
 
   // text controllers
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
-  // login button pressed
-  void login() async {
+
+  // register button pressed
+  void register() async {
     // prepare data
     final email = _emailController.text;
     final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
 
-    // sign in with email and password
+    // check if password and confirm password are the same
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Password does not match")));
+      return;
+    }
+
+    // sign up with email and password
     try {
-      await authService.signInWithEmailAndPassword(
+      await authService.signUpWithEmailAndPassword(
         email: email,
         password: password,
       );
+      // ignore: use_build_context_synchronously
+      Navigator.pop(context);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
@@ -51,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 // Welcome text
                 const Text(
-                  "Welcome back!, We've missed you!",
+                  "Create an account, It's free!",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
 
@@ -88,16 +101,33 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 10),
 
+                // confirm password
+                TextField(
+                  controller: _confirmPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "Confirm Password",
+                    prefixIcon: Icon(Icons.lock),
+                    suffixIcon: Icon(Icons.remove_red_eye),
+
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
                 // Button
                 MaterialButton(
-                  onPressed: login,
+                  onPressed: register,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadiusGeometry.circular(10),
                   ),
                   padding: EdgeInsets.all(15.0),
                   color: Colors.black,
                   child: Text(
-                    "Login",
+                    "Register",
                     style: TextStyle(color: Colors.white, fontSize: 15),
                   ),
                 ),
@@ -115,18 +145,18 @@ class _LoginPageState extends State<LoginPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 15.0),
                       child: Row(
                         children: [
-                          Text("Don't have an account ? "),
+                          Text("Already have an account? "),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => RegisterPage(),
+                                  builder: (context) => LoginPage(),
                                 ),
                               );
                             },
                             child: Text(
-                              "Sign Up",
+                              "Go to Login",
                               style: TextStyle(color: Colors.blue),
                             ),
                           ),

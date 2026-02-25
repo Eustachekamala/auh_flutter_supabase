@@ -1,4 +1,4 @@
-import 'package:auth_supabase/screens/pages/login_page.dart';
+import 'package:auth_supabase/screens/auth/auth_gate.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const LoginPage(),
+      home: const AuthGate(),
     );
   }
 }
